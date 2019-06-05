@@ -121,14 +121,14 @@ def toobad4ml(files, path):
               
                 if "ok" in file_path:
                     try:        
-                        muestra = muestra + "FALSE" # non vulnerable files
+                        muestra = muestra + "1" # FALSE non vulnerable files
                         samples_f +=1
                         #print(muestra)
                     except IndexError as ind:
                         print(ind) 
                 else:
                     try:        
-                        muestra = muestra + "TRUE" # vulnerables files
+                        muestra = muestra + "0" # TRUE vulnerables files
                         samples_t +=1
                         #print(muestra)
                     except IndexError as ind:
