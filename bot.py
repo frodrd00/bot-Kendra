@@ -49,6 +49,7 @@ def filter_lines(file_line, file_path):
 
         except: 
             print('---------Error spliting lines-------')
+            sys.exit(1)
 
     return col1, col2
     
@@ -58,7 +59,7 @@ def read_files(files):
     
     comment_bad = "/*  BAD  */"
     commnet_ok = "/*  OK  */"
-    
+
     print("Generando los comentarios en los archivos...")
     for file_path in files: # 
         try:
@@ -71,25 +72,32 @@ def read_files(files):
         
         try:
             if "ok" in file_path: # files contains ok string
-                i = lines.index(commnet_ok) # empieza indice 0, 
+                indices = [i for i, x in enumerate(lines) if x == commnet_ok] 
                 #print('Archivo ', file_path, ' linea ', i+2)
             else:
-                i = lines.index(comment_bad) # suponiendo que solo haya una linea vulnerable
+                indices = [i for i, x in enumerate(lines) if x == comment_bad]
                 #print('Archivo ', file_path, ' linea ', i+2)
         except ValueError as e:
             print(e)
+            print(file_path)
+         
+        if len(indices) > 0:
             
-        index = i + 2 # la linea vulnerable esta debajo del comentario
-     
-        col1, col2 = filter_lines(index, file_path)
-        #se escribe en el mismo archivo las posibles lineas vulnerables
-        comment = "/// ###BEGIN_VULNERABLE_LINES###"
-        if not comment in lines:
+            comment = "/// ###BEGIN_VULNERABLE_LINES###"
+            vuln_line = ''
+            
+            for i in indices:
+         
+                col1, col2 = filter_lines(i+2, file_path)
+                vuln_line += "/// " + str(i+2) + "," + col1 + ";" + str(i+2) + "," + col2 + "\n\n"
+
+    
             with open(file_path, 'ab+') as f:
-              f.write(str.encode("\n\n" + comment + "\n\n"))
-              f.write(str.encode("/// " + str(index) + "," + col1 + ";" + str(index) + "," + col2 +"\n\n"))
-        #else:
-           #print("Se ha encontrado comentario BEGIN_VULNERABLE_LINES")
+                if not comment in lines:  
+                    f.write(str.encode("\n\n" + comment + "\n\n"))
+                    f.write(str.encode(vuln_line))
+        else:
+           print("No se ha encontrado vuln.")
 
     return files
             
@@ -117,25 +125,32 @@ def toobad4ml(files, path):
             cadena = lineas.split()
             
             if "Muestra" in cadena:
-                muestra = cadena[2]
-              
-                if "ok" in file_path:
-                    try:        
-                        muestra = muestra + "1" # FALSE non vulnerable files
-                        samples_f +=1
-                        #print(muestra)
-                    except IndexError as ind:
-                        print(ind) 
-                else:
-                    try:        
-                        muestra = muestra + "0" # TRUE vulnerables files
-                        samples_t +=1
-                        #print(muestra)
-                    except IndexError as ind:
-                        print(ind) 
                 
-                data.append(muestra.split(';'))
-            
+                muestra = cadena[2]
+                listChar = muestra.split(';')
+                listChar1 = listChar[1:5]
+                listChar2 = listChar[5:10]
+                
+                if any(x != '-1' for x in listChar2)  or  any(x != '0' for x in listChar1):
+        
+                    if "ok" in file_path:
+                        try:        
+                            muestra = muestra + "1" # FALSE non vulnerable files
+                            samples_f +=1
+                            #print(muestra)
+                        except IndexError as ind:
+                            print(ind) 
+                            sys.exit(1)
+                    else:
+                        try:        
+                            muestra = muestra + "0" # TRUE vulnerables files
+                            samples_t +=1
+                            #print(muestra)
+                        except IndexError as ind:
+                            print(ind) 
+                            sys.exit(1)
+                    
+                    data.append(map(int, muestra.split(';')))
     return data, samples_t, samples_f
 
 # crea el archivo csv con el dataset de las caracteristicas del BOF
@@ -171,7 +186,6 @@ def main():
             path_csv = sys.argv[3]
 
             files = glob.glob(path_vuln)
-
             read_files(files)
 
             if os.path.exists(path_toolbad4ml) and os.path.isfile(path_toolbad4ml):
@@ -179,12 +193,14 @@ def main():
             else:
                 print("Ruta de toolbad4ml no valida")
                 print_usage()
+                sys.exit(1)
             
             if path_csv.endswith('.csv'):
                 create_csv(data, path_csv)
             else: 
                 print("Extension csv no valida")
                 print_usage()
+                sys.exit(1)
             
             print("Total number of files: ", len(files))
             print("Number of samples generated: ", len(data))
