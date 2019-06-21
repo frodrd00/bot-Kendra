@@ -16,8 +16,8 @@ int main() {
 
  
   // 1. String copy
-  char str1[10];
-  char str2[6];
+  char str1[7];
+  char str2[9];
   
   strcpy(str1,"To be ");
   /*  BAD  */
@@ -29,7 +29,7 @@ int main() {
   /*  BAD  */
   strcat(str1, str2);
   /*  BAD  */
-  strncat(str1, str2, 6);
+  strncat(str1, str2, 10);
 
   puts(str1);
   puts(str2);
@@ -50,31 +50,21 @@ int main() {
   printf("After memmove dest = %s, src = %s\n", dest, src);
 
   // 4. Formatted string output
-  char buffer[50]; 
+  char buffer[20]; 
   int a = 10, b = 20, c = 25; 
   /*  BAD  */
   sprintf(buffer, "Sum of %d and %d is %d", a, b, c); 
   printf("%s", buffer); 
 
-  char buffer12[50]; 
-  char a2[] = "300"; int b2 = 20, c2 = 320; 
-  /*  BAD  */
-  sprintf(buffer12, "Sum of %2.3s and %d is %d", a2, b2, c2); 
-  printf("%s", buffer12); 
-
   char buffer2[11]; 
   char* cadena = "geeksforgeeks";  
   /*  BAD  */
-  snprintf(buffer2, 6, "%s\n", cadena); 
+  snprintf(buffer2, 13, "%s\n", cadena); 
 
   // 5. Unformatted string input 
   char passwd[PASSLEN] = {0};
   /*  BAD  */
   gets(passwd);
-
-  char buf[MAX]; 
-  /*  BAD  */
-  fgets(buf, MAX, stdin); 
 
   // 6. Formatted string input
   /*  BAD  */
@@ -95,4 +85,31 @@ int main() {
   name[5] = 'A';
 
 }
+
+
+/// ###BEGIN_VULNERABLE_LINES###
+
+/// 24,3;24,29
+
+/// 26,3;26,25
+
+/// 30,3;30,20
+
+/// 32,3;32,25
+
+/// 41,3;41,47
+
+/// 49,3;49,23
+
+/// 56,3;56,52
+
+/// 62,3;62,39
+
+/// 67,3;67,14
+
+/// 71,3;71,21
+
+/// 78,3;78,60
+
+/// 85,3;85,13
 
