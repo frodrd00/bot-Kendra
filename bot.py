@@ -136,11 +136,14 @@ def toobad4ml(files, path):
             
                         if "ok" in file_path:
                             try:     
-                                if any(x == '0' for x in listChar2) or (listChar[1] == '5'):
+                                if any(x == '0' for x in listChar2):
+                                    print('******Error en la muestra:*****')
                                     print(muestra)
                                     print(file_path)
-                                muestra = muestra + "1" # FALSE non vulnerable files
-                                samples_f +=1
+                                else : 
+                                    muestra = muestra + "1" # FALSE non vulnerable files
+                                    samples_f +=1
+                                    data.append(map(int, muestra.split(';')))
                                 #print(muestra)
                             except IndexError as ind:
                                 print(ind) 
@@ -148,16 +151,18 @@ def toobad4ml(files, path):
                         else:
                             try:     
                                 if any(x == '1' for x in listChar2):
+                                    print('******Error en la muestra:*****')
                                     print(muestra)
                                     print(file_path)
-                                muestra = muestra + "0" # TRUE vulnerables files
-                                samples_t +=1
+                                else: 
+                                    muestra = muestra + "0" # TRUE vulnerables files
+                                    samples_t +=1
+                                    data.append(map(int, muestra.split(';')))
                                 #print(muestra)
                             except IndexError as ind:
                                 print(ind) 
                                 sys.exit(1)
-                        
-                        data.append(map(int, muestra.split(';')))
+                    
     return data, samples_t, samples_f
 
 # crea el archivo csv con el dataset de las caracteristicas del BOF
