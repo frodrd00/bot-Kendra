@@ -60,16 +60,11 @@ int main() {
   /*  OK  */
   snprintf(buffer2, 6, "%s\n", cadena); 
 
-  // 5. Unformatted string input 
-  char buf[MAX]; 
-  /*  OK  */
-  fgets(buf, MAX, stdin); 
-
   // 7. Array element writes
 
   char name[5] = "AAAA";
   /*  OK  */
-  name[5] = 'A';
+  name[4] = 'A';
 
 }
 
@@ -92,7 +87,5 @@ int main() {
 
 /// 61,3;61,38
 
-/// 66,3;66,24
-
-/// 72,3;72,13
+/// 67,3;67,13
 

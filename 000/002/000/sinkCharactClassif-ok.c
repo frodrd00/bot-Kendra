@@ -10,12 +10,6 @@ int main () {
 	strncpy(str4, str3, 3);  // null terminator
 	puts(str4);
 
-	char str5[] = "To be or not to be";
-	char str6[4];
-	/*  OK  */
-	strncpy(str6, str5, sizeof(str6)-1); // null terminator
-	puts(str6);
-
 	// 3. Array write index within bounds. 
 	char array[4] = {'A', 'B', 'C', '\0'};
 	/*  OK  */
@@ -64,26 +58,23 @@ int main () {
 
 }
 
-
 /// ###BEGIN_VULNERABLE_LINES###
 
 /// 10,2;10,23
 
-/// 16,2;16,36
+/// 16,2;16,13
 
-/// 22,2;22,13
+/// 21,4;21,16
 
-/// 27,4;27,16
+/// 28,2;28,29
 
-/// 34,2;34,29
+/// 33,2;33,31
 
-/// 39,2;39,31
+/// 39,4;39,33
 
-/// 45,4;45,33
+/// 45,3;45,20
 
-/// 51,3;51,20
+/// 51,2;51,22
 
-/// 57,2;57,22
-
-/// 62,3;62,18
+/// 56,3;56,18
 

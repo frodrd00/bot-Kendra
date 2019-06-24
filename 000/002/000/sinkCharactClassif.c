@@ -7,13 +7,13 @@ int main () {
 	char str3[] = "To be or not to be";
 	char str4[4];
 	/*  BAD  */
-	strncpy(str4, str3, 4);  // null terminator
+	strncpy(str4, str3, 5);  
 	puts(str4);
 
 	char str5[] = "To be or not to be";
 	char str6[4];
 	/*  BAD  */
-	strncpy(str6, str5, sizeof(str6)); // null terminator
+	strncpy(str6, str5, sizeof(str6)); 
 	puts(str6);
 
 	// 3. Array write index within bounds. 

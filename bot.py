@@ -131,34 +131,41 @@ def toobad4ml(files, path):
                 listChar1 = listChar[1:5]
                 listChar2 = listChar[5:10]
                 
-                if any(x != '-1' for x in listChar2)  or  any(x != '0' for x in listChar1):
-        
-                    if "ok" in file_path:
-                        try:        
-                            muestra = muestra + "1" # FALSE non vulnerable files
-                            samples_f +=1
-                            #print(muestra)
-                        except IndexError as ind:
-                            print(ind) 
-                            sys.exit(1)
-                    else:
-                        try:        
-                            muestra = muestra + "0" # TRUE vulnerables files
-                            samples_t +=1
-                            #print(muestra)
-                        except IndexError as ind:
-                            print(ind) 
-                            sys.exit(1)
-                    
-                    data.append(map(int, muestra.split(';')))
+                if all(z != '2' for z in listChar):
+                    if any(x != '-1' for x in listChar2)  or  any(x != '0' for x in listChar1):
+            
+                        if "ok" in file_path:
+                            try:     
+                                if any(x == '0' for x in listChar2) or (listChar[1] == '5'):
+                                    print(muestra)
+                                    print(file_path)
+                                muestra = muestra + "1" # FALSE non vulnerable files
+                                samples_f +=1
+                                #print(muestra)
+                            except IndexError as ind:
+                                print(ind) 
+                                sys.exit(1)
+                        else:
+                            try:     
+                                if any(x == '1' for x in listChar2):
+                                    print(muestra)
+                                    print(file_path)
+                                muestra = muestra + "0" # TRUE vulnerables files
+                                samples_t +=1
+                                #print(muestra)
+                            except IndexError as ind:
+                                print(ind) 
+                                sys.exit(1)
+                        
+                        data.append(map(int, muestra.split(';')))
     return data, samples_t, samples_f
 
 # crea el archivo csv con el dataset de las caracteristicas del BOF
 def create_csv(data, csv):
     
     head = ['SinkClassification', 'CommandLine', 'EnvironmentVariable', 
-            'File', 'Network', 'NumberOfElementsCopiedWithinBounds', 'StringCopyWithinBounds',
-			'FormatStringPrecisionWithinBounds', 'ArrayWriteIndexWithinBounds', 
+            'File', 'Network', 'NumberOfElementsCopiedWithinBounds', 'ArrayWriteIndexWithinBounds',
+			'FormatStringPrecisionWithinBounds', 'StringCopyWithinBounds', 
             'IsCharacterCaseConversionSink', 'Vulnerable?' ]
     
     df = pd.DataFrame(data)
