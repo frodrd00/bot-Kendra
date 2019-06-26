@@ -130,13 +130,14 @@ def toobad4ml(files, path):
                 listChar = muestra.split(';')
                 listChar1 = listChar[1:5]
                 listChar2 = listChar[5:10]
+                listChar3 = listChar[5:9]
                 
                 if all(z != '2' for z in listChar):
                     if any(x != '-1' for x in listChar2)  or  any(x != '0' for x in listChar1):
             
                         if "ok" in file_path:
                             try:     
-                                if any(x == '0' for x in listChar2):
+                                if any(x == '0' for x in listChar3):
                                     print('******Error en la muestra:*****')
                                     print(muestra)
                                     print(file_path)
@@ -150,7 +151,7 @@ def toobad4ml(files, path):
                                 sys.exit(1)
                         else:
                             try:     
-                                if any(x == '1' for x in listChar2):
+                                if any(x == '1' for x in listChar3):
                                     print('******Error en la muestra:*****')
                                     print(muestra)
                                     print(file_path)
