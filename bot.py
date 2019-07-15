@@ -118,6 +118,7 @@ def toobad4ml(files, path):
         sys.stderr.flush()
         sys.stdout.flush()
 
+        cont = 0
         # buscar la lineas de muestra
         for lineas in splited:
             
@@ -138,13 +139,14 @@ def toobad4ml(files, path):
                         if "ok" in file_path:
                             try:     
                                 if any(x == '0' for x in listChar3):
-                                    print('******Error en la muestra:*****')
+                                    print('******Error en la muestra: Hay un 0 en y no es vulnerable***** + str(cont)')
                                     print(muestra)
                                     print(file_path)
                                 else : 
                                     muestra = muestra + "1" # FALSE non vulnerable files
                                     samples_f +=1
                                     data.append(map(int, muestra.split(';')))
+                                cont +=1
                                 #print(muestra)
                             except IndexError as ind:
                                 print(ind) 
@@ -152,17 +154,23 @@ def toobad4ml(files, path):
                         else:
                             try:     
                                 if any(x == '1' for x in listChar3):
-                                    print('******Error en la muestra:*****')
+                                    print('******Error en la muestra: Hay un 1 y es vulnerable***** + str(cont)')
                                     print(muestra)
                                     print(file_path)
                                 else: 
                                     muestra = muestra + "0" # TRUE vulnerables files
                                     samples_t +=1
                                     data.append(map(int, muestra.split(';')))
+                                cont +=1
                                 #print(muestra)
                             except IndexError as ind:
                                 print(ind) 
                                 sys.exit(1)
+                else:
+                     cont +=1
+                     print('******Error en la muestra: Contiene 2*****' + str(cont))
+                     print(muestra)
+                     print(file_path)
                     
     return data, samples_t, samples_f
 
@@ -187,39 +195,37 @@ def print_usage():
 # la primera funcion que ejecuta el programa
 def main():
 
-    if len(sys.argv) == 4:
-        if sys.argv[1] == '-h':
-            print_usage()
-
+    if len(sys.argv) == 2 and sys.argv[1] == '-h':
+        print_usage()
+    elif len(sys.argv) == 4:
+        # recorrer los archivos 
+        #path = '000/*/*/*.c'
+        path_vuln = sys.argv[1]
+        path_toolbad4ml = sys.argv[2]
+        path_csv = sys.argv[3]
+        
+        files = glob.glob(path_vuln)
+        read_files(files)
+        
+        if os.path.exists(path_toolbad4ml) and os.path.isfile(path_toolbad4ml):
+            data, samples_t, samples_f = toobad4ml(files, path_toolbad4ml)
         else:
-            # recorrer los archivos 
-            #path = '000/*/*/*.c'
-            path_vuln = sys.argv[1]
-            path_toolbad4ml = sys.argv[2]
-            path_csv = sys.argv[3]
-
-            files = glob.glob(path_vuln)
-            read_files(files)
-
-            if os.path.exists(path_toolbad4ml) and os.path.isfile(path_toolbad4ml):
-                data, samples_t, samples_f = toobad4ml(files, path_toolbad4ml)
-            else:
-                print("Ruta de toolbad4ml no valida")
-                print_usage()
-                sys.exit(1)
-            
-            if path_csv.endswith('.csv'):
-                create_csv(data, path_csv)
-            else: 
-                print("Extension csv no valida")
-                print_usage()
-                sys.exit(1)
-            
-            print("Total number of files: ", len(files))
-            print("Number of samples generated: ", len(data))
-            print("Number of samples labeled vulnerable: ", samples_t)
-            print("Number of samples labeled not vulnerable: ", samples_f)
-            print("Fin")
+            print("Ruta de toolbad4ml no valida")
+            print_usage()
+            sys.exit(1)
+        
+        if path_csv.endswith('.csv'):
+            create_csv(data, path_csv)
+        else: 
+            print("Extension csv no valida")
+            print_usage()
+            sys.exit(1)
+        
+        print("Total number of files: ", len(files))
+        print("Number of samples generated: ", len(data))
+        print("Number of samples labeled vulnerable: ", samples_t)
+        print("Number of samples labeled not vulnerable: ", samples_f)
+        print("Fin")
     else:
         print("Numero de argumentos invalidos")
         print_usage()
